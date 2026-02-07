@@ -10,9 +10,16 @@ os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
 from langchain.agents import create_agent
 from langchain.agents.structured_output import ToolStrategy
+from langchain.chat_models import init_chat_model
 
-agent = create_agent(
+main_agent = create_agent(
     model = "gpt-5-nano",
     tools=[],
+    middleware=[],
     response_format=ToolStrategy(json_schema)
+)
+
+summary_model = init_chat_model(
+    "gpt-4",
+    temperature = 0.0
 )

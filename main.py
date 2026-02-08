@@ -20,6 +20,7 @@ response = main_agent.invoke(
 
 print(response['structured_response'])
 
-with open('test.json', 'w', encoding='utf-8') as f:
-    json.dump({'messages':history+[structured_user_input,response['structured_response']]}, f, ensure_ascii=False, indent=2)
+if response['structured_response']['role'] == "ai":
+    with open('test.json', 'w', encoding='utf-8') as f:
+        json.dump({'messages':history+[structured_user_input,response['structured_response']]}, f, ensure_ascii=False, indent=2)
 

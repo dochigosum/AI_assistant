@@ -15,3 +15,9 @@ json_schema = {
     },
     "required": ["role", "content"]
 }
+
+from pydantic import BaseModel, Field
+
+class CustomGuardrail(BaseModel):
+    """학습에 관련된 정보인지 아닌지 정보"""
+    is_corrected : bool = Field(description="인풋이 학습에 관련된 내용인지 아닌지")

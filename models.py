@@ -8,18 +8,30 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
-from langchain.agents import create_agent
-from langchain.agents.structured_output import ToolStrategy
 from langchain.chat_models import init_chat_model
 
-main_agent = create_agent(
-    model = "gpt-5-nano",
-    tools=[],
-    middleware=[],
-    response_format=ToolStrategy(json_schema)
-)
 
 summary_model = init_chat_model(
-    "gpt-4",
+    "gpt-5-nano",
     temperature = 0.0
+)
+
+learning_guardrail_model = init_chat_model(
+    "gpt-5-nano",
+    temperature = 0.0,
+)
+
+
+from schemas import CustomGuardrail
+structured_learning_guardrail_model = learning_guardrail_model.with_structured_output(CustomGuardrail)
+
+from langchain.agents import create_agent
+from langchain.agents.structured_output import ToolStrategy
+from middelware import my_guardrail_middleware
+
+main_agent = create_agent(
+    model = "gpt-5-mini",
+    tools=[],
+    middleware=[my_guardrail_middleware],
+    response_format=ToolStrategy(json_schema)
 )

@@ -18,9 +18,6 @@ json_schema = {
 
 from pydantic import BaseModel, Field
 
-class NegativeGuardrail(BaseModel):
-    """사용자의 질문에 욕이 포함되었는지에 대한 정보"""
-    is_corrected : bool = Field(description="사용자의 질문에 욕이 사용되었는지")
 
 class LearningGuardrail(BaseModel):
     """사용자의 질문이 적절한지에 대한 정보"""

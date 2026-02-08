@@ -1,6 +1,7 @@
 from langchain.agents.middleware import before_agent
-from models import structured_negative_guardrail_model,structured_learning_guardrail_model
-from prompts import negative_guardrail_prompt,learning_guardrail_prompt
+from models import structured_learning_guardrail_model
+from prompts import learning_guardrail_prompt
+from negative_words import negative_word_set
 
 @before_agent(can_jump_to=["end"])
 def my_guardrail_middleware(state, runtime) :
@@ -10,18 +11,15 @@ def my_guardrail_middleware(state, runtime) :
 
     user_text = last_message.content
 
-    negative_response = structured_negative_guardrail_model.invoke(
-        [{"role": "system", "content": f"{negative_guardrail_prompt}"}] + [{"role": "user", "content": user_text}]
-    )
-
-    if negative_response.is_corrected:
-        return {
-            "structured_response": {
-                "role": "guardrail",
-                "content": "욕이 감지되었어. 다시한번 질문해 주실수 있으신가요?",
-            },
-            "jump_to": "end"
-        }
+    for negative_word in negative_word_set:
+        if negative_word in user_text:
+            return {
+                "structured_response": {
+                    "role": "guardrail",
+                    "content": "욕이 감지되었어. 다시한번 질문해 주실수 있으신가요?",
+                },
+                "jump_to": "end"
+            }
 
     learning_response = structured_learning_guardrail_model.invoke(
         [{"role": "system", "content": f"{learning_guardrail_prompt}"}] + [ {"role": "user", "content": user_text}]

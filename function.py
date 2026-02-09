@@ -56,9 +56,10 @@ def send_memory(conversation_id : int, drawing_id : int, messages : list) :
     db.ping(reconnect=True)
     try:
         cursor = db.cursor()
-        update_sql = "UPDATE CONVERSATION SET message = %s WHERE id = %s AND drawing_id = %s"
-        cursor.execute(update_sql, (json.dumps({'messages':messages}, indent=2, ensure_ascii=False), conversation_id, drawing_id))
-        db.commit()
+        if messages[-1]['role'] == 'ai':
+            update_sql = "UPDATE CONVERSATION SET message = %s WHERE id = %s AND drawing_id = %s"
+            cursor.execute(update_sql, (json.dumps({'messages':messages}, indent=2, ensure_ascii=False), conversation_id, drawing_id))
+            db.commit()
 
     except Exception as e:
         print(f"에러 발생: {e}")

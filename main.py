@@ -11,13 +11,13 @@ from prompts import sys_prompt
 from function import summarization, get_memory, send_memory
 
 class AiRequest(BaseModel):
-    user_id : int
+    conversation_id : int
     drawing_id : int
     content : str
 @app.get('/api/v1/assistant')
 def all_read() -> str:
-    history = get_memory('test.json')
-    if history['role'] == 'user':
+    history = get_memory()
+    if history and history[0]['role'] == 'user':
         history = history[1:]
     return json.dumps(history,ensure_ascii=False, indent=2)
 
@@ -27,9 +27,13 @@ def create_users(request_body : AiRequest) -> str:
 
     structured_user_input = {'role':'user','content':request_body.content}
 
-    history = get_memory('test.json')
+    history = get_memory(
+        conversation_id=request_body.conversation_id,
+        drawing_id=request_body.drawing_id
+    )
 
     history = summarization(history,trigger=16)
+    print(len(history))
 
     response = main_agent.invoke(
         {'messages':[sys_message]+history+[structured_user_input]}
@@ -38,10 +42,9 @@ def create_users(request_body : AiRequest) -> str:
     print(response['structured_response'])
 
     send_memory(
-        filename='test.json',
-        history=history,
-        user_message=structured_user_input,
-        message=response['structured_response']
+        conversation_id=request_body.conversation_id,
+        drawing_id=request_body.drawing_id,
+        messages=history+[structured_user_input,response['structured_response']]
     )
     return response['structured_response']['content']
 

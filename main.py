@@ -11,7 +11,7 @@ from prompts import sys_prompt
 from function import summarization, get_memory, send_memory
 
 class AiRequest(BaseModel):
-    conversation_id : int
+    id : int
     drawing_id : int
     content : str
 @app.get('/api/v1/assistant')
@@ -28,7 +28,7 @@ def create_users(request_body : AiRequest) -> str:
     structured_user_input = {'role':'user','content':request_body.content}
 
     history = get_memory(
-        conversation_id=request_body.conversation_id,
+        conversation_id=request_body.id,
         drawing_id=request_body.drawing_id
     )
 
@@ -42,7 +42,7 @@ def create_users(request_body : AiRequest) -> str:
     print(response['structured_response'])
 
     send_memory(
-        conversation_id=request_body.conversation_id,
+        conversation_id=request_body.id,
         drawing_id=request_body.drawing_id,
         messages=history+[structured_user_input,response['structured_response']]
     )

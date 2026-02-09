@@ -16,7 +16,7 @@ def my_guardrail_middleware(state, runtime) :
             return {
                 "structured_response": {
                     "role": "guardrail",
-                    "content": "욕이 감지되었어. 다시한번 질문해 주실수 있으신가요?",
+                    "content": "욕이 감지되었어요. 다시한번 질문해 주실수 있으신가요?",
                 },
                 "jump_to": "end"
             }
@@ -29,7 +29,7 @@ def my_guardrail_middleware(state, runtime) :
         return {
             "structured_response": {
                 "role": "guardrail",
-                "content": "질문하신 내용도 흥미롭지만, 저는 학습을 도와주는 AI라 잘 답변하지 못하겠어요. 다른 질문을 시작할 까요?",
+                "content": "질문하신 내용도 흥미롭지만, 저는 학습을 도와주는 AI여서 잘 답변하지 못하겠어요. 다른 질문을 시작 할까요?",
             },
             "jump_to": "end"
         }

@@ -33,7 +33,6 @@ def create_users(request_body : AiRequest) -> str:
     )
 
     history = summarization(history,trigger=16)
-    print(len(history))
 
     response = main_agent.invoke(
         {'messages':[sys_message]+history+[structured_user_input]}

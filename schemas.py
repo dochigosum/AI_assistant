@@ -10,7 +10,7 @@ json_schema = {
         },
         "content": {
             "type": "string",
-            "description": "사용자의 질문에 대한 구체적인 답변 내용"
+            "description": "AI의 답변"
         }
     },
     "required": ["role", "content"]

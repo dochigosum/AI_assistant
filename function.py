@@ -7,11 +7,11 @@ load_dotenv()
 import pymysql
 
 db = pymysql.connect(
-    host=os.getenv("HOST"),
+    host=os.getenv('HOST'),
     port=3306,
-    user=os.getenv("USER"),
-    passwd=os.getenv("PASSWD"),
-    db=os.getenv("DB"),
+    user=os.getenv('user'),
+    passwd=os.getenv('passwd'),
+    db=os.getenv('db'),
     charset='utf8',
     autocommit=True
 )
@@ -34,7 +34,6 @@ def get_memory(drawing_id : int = 1) -> list:
         read_sql = "SELECT * FROM CONVERSATION WHERE drawing_id = %s"
         cursor.execute(read_sql, drawing_id)
         row = cursor.fetchone()
-        print(row)
         if row[-1]:
             memory = json.loads(row[-1])['messages']
         else:
@@ -48,7 +47,6 @@ def get_memory(drawing_id : int = 1) -> list:
 
     finally:
         cursor.close()
-    print(memory)
     return memory
 
 def send_memory(drawing_id : int, messages : list) :

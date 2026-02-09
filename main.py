@@ -13,9 +13,10 @@ from function import summarization, get_memory, send_memory
 class AiRequest(BaseModel):
     id : int
     drawing_id : int
+    template_name : str
     content : str
-@app.get('/api/v1/assistant')
-def all_read() -> str:
+@app.get('/api/v1/assistant/{drawing_id}')
+def all_read(drawing_id : int) -> str:
     history = get_memory()
     if history and history[0]['role'] == 'user':
         history = history[1:]
@@ -28,7 +29,6 @@ def create_users(request_body : AiRequest) -> str:
     structured_user_input = {'role':'user','content':request_body.content}
 
     history = get_memory(
-        conversation_id=request_body.id,
         drawing_id=request_body.drawing_id
     )
 
@@ -42,7 +42,6 @@ def create_users(request_body : AiRequest) -> str:
     print(response['structured_response'])
 
     send_memory(
-        conversation_id=request_body.id,
         drawing_id=request_body.drawing_id,
         messages=history+[structured_user_input,response['structured_response']]
     )

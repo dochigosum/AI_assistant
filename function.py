@@ -25,23 +25,22 @@ def summarization(memory : list, trigger : int = 16, keep : int = 2, system_prom
     else:
         return memory
 
-def get_memory(conversation_id : int = 1, drawing_id : int = 1) -> list:
+def get_memory(drawing_id : int = 1) -> list:
     db.ping(reconnect=True)
     memory = []
     try:
         cursor = db.cursor()
 
-        read_sql = "SELECT * FROM CONVERSATION WHERE id = %s AND drawing_id = %s"
-        cursor.execute(read_sql, (conversation_id, drawing_id))
+        read_sql = "SELECT * FROM CONVERSATION WHERE drawing_id = %s"
+        cursor.execute(read_sql, drawing_id)
         row = cursor.fetchone()
         print(row)
         if row[-1]:
             memory = json.loads(row[-1])['messages']
         else:
-            update_sql = "UPDATE CONVERSATION SET message = %s WHERE id = %s AND drawing_id = %s"
+            update_sql = "UPDATE CONVERSATION SET message = %s WHERE drawing_id = %s"
             cursor.execute(update_sql,
-                           (json.dumps({'messages': []}, indent=2, ensure_ascii=False), conversation_id,
-                            drawing_id))
+                           (json.dumps({'messages': []}, indent=2, ensure_ascii=False),drawing_id))
             db.commit()
 
     except Exception as e:
@@ -52,13 +51,13 @@ def get_memory(conversation_id : int = 1, drawing_id : int = 1) -> list:
     print(memory)
     return memory
 
-def send_memory(conversation_id : int, drawing_id : int, messages : list) :
+def send_memory(drawing_id : int, messages : list) :
     db.ping(reconnect=True)
     try:
         cursor = db.cursor()
         if messages[-1]['role'] == 'ai':
-            update_sql = "UPDATE CONVERSATION SET message = %s WHERE id = %s AND drawing_id = %s"
-            cursor.execute(update_sql, (json.dumps({'messages':messages}, indent=2, ensure_ascii=False), conversation_id, drawing_id))
+            update_sql = "UPDATE CONVERSATION SET message = %s WHERE drawing_id = %s"
+            cursor.execute(update_sql, (json.dumps({'messages':messages}, indent=2, ensure_ascii=False), drawing_id))
             db.commit()
 
     except Exception as e:

@@ -29,7 +29,7 @@ def create_users(request_body : AiRequest) -> str:
 
     history = get_memory('test.json')
 
-    history = summarization(history,trigger=20)
+    history = summarization(history,trigger=16)
 
     response = main_agent.invoke(
         {'messages':[sys_message]+history+[structured_user_input]}
